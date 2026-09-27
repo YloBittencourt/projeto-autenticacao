@@ -1,37 +1,29 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule
-} from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
 export class LoginComponent {
 
-  loginForm: FormGroup;
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-  mostrarMensagemLog: boolean = false;
-  mensagemErro: string = '';
+  loginForm = this.fb.nonNullable.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6)]]
+  });
 
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService
-  ) {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
-    });
-  }
+  carregando = signal(false);
+  mensagemErro = signal('');
 
   onSubmit(): void {
 
@@ -40,48 +32,33 @@ export class LoginComponent {
       return;
     }
 
-    const email = this.loginForm.get('email')?.value;
-    const password = this.loginForm.get('password')?.value;
+    const { email, password } = this.loginForm.getRawValue();
+
+    this.carregando.set(true);
+    this.mensagemErro.set('');
 
     this.authService.login(email, password).subscribe({
-
-      next: (response) => {
-        console.log('Login realizado com sucesso!');
-        console.log('Token recebido:', response.token);
-
-        this.mensagemErro = '';
-        this.mostrarMensagemLog = true;
-
-        setTimeout(() => {
-          this.mostrarMensagemLog = false;
-        }, 3000);
+      next: () => {
+        this.carregando.set(false);
+        this.router.navigate(['/home']);
       },
-
-      error: (error) => {
-        console.error('Erro ao fazer login:', error);
-
-        this.mostrarMensagemLog = false;
-        this.mensagemErro = 'E-mail ou senha inválidos.';
+      error: (error: HttpErrorResponse) => {
+        this.carregando.set(false);
+        this.mensagemErro.set(this.traduzirErro(error));
       }
-
     });
   }
 
-  testarAutenticacao(): void {
-       this.authService.testarRotaProtegida().subscribe({
-          next: (resposta) => {
-             console.log('Rota protegida:', resposta);
-        },
-        error: (erro) => {
-         console.error('Erro na rota protegida:', erro);
-        }
-      });
-   }
-  onForgotPassword(): void {
-    console.log('Redirecionar para recuperação de senha');
+  campoInvalido(campo: 'email' | 'password'): boolean {
+    const control = this.loginForm.controls[campo];
+    return control.invalid && control.touched;
   }
 
-  onCreateAccount(): void {
-    console.log('Redirecionar para criação de conta');
+  private traduzirErro(error: HttpErrorResponse): string {
+    if (error.status === 0) {
+      return 'Não foi possível conectar ao servidor. Verifique se o backend está rodando.';
+    }
+
+    return error.error?.erro ?? 'E-mail ou senha inválidos.';
   }
 }

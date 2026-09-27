@@ -1,67 +1,49 @@
-<div class="login-container">
-  <div class="login-card">
+<div class="page-container">
+  <div class="card">
     <h2>Acesse sua conta</h2>
-    
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <!-- Campo de E-mail -->
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
       <div class="form-group">
         <label for="email">E-mail</label>
-        <input 
-          type="email" 
-          id="email" 
-          formControlName="email" 
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
           placeholder="Digite seu e-mail"
+          autocomplete="username"
+          [class.invalid]="campoInvalido('email')"
         >
-        <div class="error-message" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-          Insira um e-mail válido.
-        </div>
+        @if (campoInvalido('email')) {
+          <div class="error-message">Insira um e-mail válido.</div>
+        }
       </div>
 
-      <!-- Campo de Senha -->
       <div class="form-group">
         <label for="password">Senha</label>
-        <input 
-          type="password" 
-          id="password" 
-          formControlName="password" 
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
           placeholder="Digite sua senha"
+          autocomplete="current-password"
+          [class.invalid]="campoInvalido('password')"
         >
-        <div class="error-message" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-          A senha deve ter pelo menos 6 caracteres.
-        </div>
+        @if (campoInvalido('password')) {
+          <div class="error-message">A senha deve ter pelo menos 6 caracteres.</div>
+        }
       </div>
 
-      <!-- Esqueci a senha -->
-      <div class="forgot-password">
-        <a href="javascript:void(0)" (click)="onForgotPassword()">Esqueci minha senha</a>
-      </div>
+      @if (mensagemErro()) {
+        <div class="alert-error" role="alert">{{ mensagemErro() }}</div>
+      }
 
-      <!-- Botão de Entrar -->
-      <button type="submit" class="btn-primary" [disabled]="loginForm.invalid">
-        Entrar
+      <button type="submit" class="btn-primary" [disabled]="carregando()">
+        {{ carregando() ? 'Entrando...' : 'Entrar' }}
       </button>
-
-      <button
-  	 type="button"
-  	 class="btn-secondary"
- 	 (click)="testarAutenticacao()"
-      >
-         Testar autenticação
-      </button>
-      <!-- Mensagem de sucesso (temporaria) -->
-      <div class="success-log-message" *ngIf="mostrarMensagemLog">
-        Dados impressos no console log
-      </div>
     </form>
 
-    <hr>
-
-    <!-- Criar Conta -->
-    <div class="register-section">
-      <p>Ainda não tem acesso?</p>
-      <button type="button" class="btn-secondary" (click)="onCreateAccount()">
-        Criar conta
-      </button>
-    </div>
+    <p class="hint">
+      Usuário de teste: <strong>aluno&#64;email.com</strong> / <strong>123456</strong>
+    </p>
   </div>
 </div>

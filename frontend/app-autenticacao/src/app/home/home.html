@@ -1,0 +1,36 @@
+<div class="page-container">
+  <div class="card">
+    <h2>Área protegida</h2>
+
+    @if (usuario(); as u) {
+      <div class="alert-success">{{ u.mensagem }}</div>
+
+      <dl class="info">
+        <dt>E-mail</dt>
+        <dd>{{ u.email }}</dd>
+
+        <dt>Perfis</dt>
+        <dd>{{ u.roles.join(', ') }}</dd>
+
+        <dt>Token expira em</dt>
+        <dd>{{ expiracao | date: 'dd/MM/yyyy HH:mm:ss' }}</dd>
+
+        <dt>Access Token (JWT)</dt>
+        <dd class="token" [title]="token">{{ token }}</dd>
+      </dl>
+    } @else if (mensagemErro()) {
+      <div class="alert-error">{{ mensagemErro() }}</div>
+    } @else {
+      <p class="loading">Carregando dados do usuário...</p>
+    }
+
+    <div class="actions">
+      <button type="button" class="btn-secondary" (click)="carregarUsuario()">
+        Chamar /api/me novamente
+      </button>
+      <button type="button" class="btn-primary" (click)="sair()">
+        Sair
+      </button>
+    </div>
+  </div>
+</div>
