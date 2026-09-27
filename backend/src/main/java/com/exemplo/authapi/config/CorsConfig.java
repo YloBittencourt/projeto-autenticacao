@@ -8,6 +8,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/** Libera o frontend Angular (localhost:4200) para chamar a API. */
 @Configuration
 public class CorsConfig {
 
@@ -25,7 +26,7 @@ public class CorsConfig {
         );
 
         configuration.setAllowedHeaders(
-                List.of("*")
+                List.of("Authorization", "Content-Type")
         );
 
         UrlBasedCorsConfigurationSource source =
