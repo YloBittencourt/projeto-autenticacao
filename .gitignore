@@ -11,6 +11,10 @@ Thumbs.db
 # =========================
 
 .idea/
+.classpath
+.project
+.settings/
+.factorypath
 .vscode/
 *.iml
 
@@ -20,6 +24,7 @@ Thumbs.db
 # =========================
 
 backend/target/
+backend/bin/
 backend/.mvn/timing.properties
 
 *.class
