@@ -1,0 +1,4 @@
+# Binarios: evita diff/merge de texto em arquivos da apresentacao
+*.pdf  binary
+*.pptx binary
+*.png  binary
