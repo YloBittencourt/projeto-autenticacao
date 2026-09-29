@@ -145,4 +145,4 @@ cd frontend/app-autenticacao && npx ng test --watch=false
 
 ## Apresentação
 
-Slides da apresentação (conceito + solução): [`docs/apresentacao-jwt.pptx`](docs/apresentacao-jwt.pptx)
+Slides da apresentação (conceito + solução): [`docs/apresentacao.pdf`](docs/apresentacao.pdf)
