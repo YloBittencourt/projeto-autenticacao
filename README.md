@@ -1,5 +1,7 @@
 # Autenticação com JWT — Spring Boot + Angular
 
+**Equipe:** Tarsis Barreto, Ylo Bittencourt, Guilherme Crocamo, Samuel Santos e João França
+
 Tela de login com autenticação no servidor usando **JSON Web Token (JWT)**.
 
 A senha é usada **somente no login**. Depois disso, todas as requisições
@@ -39,9 +41,10 @@ sequenceDiagram
 ### Pré-requisitos
 - **Java 17+** (testado com Java 21)
 - **Node.js 22.22.3+ ou 24.15+** (exigência do Angular CLI 22)
-- Porta **8080** livre (XAMPP/Apache costumam usá-la — pare o serviço antes)
+- Porta **8081** livre (o backend usa a 8081 para não conflitar com XAMPP/Apache na 8080;
+  para trocar, defina a variável de ambiente `SERVER_PORT` e ajuste `src/app/api.config.ts`)
 
-### 1. Backend (porta 8080)
+### 1. Backend (porta 8081)
 
 ```bash
 cd backend
@@ -74,13 +77,13 @@ Acesse **http://localhost:4200** e entre com o usuário de teste:
 
 ```bash
 # Login → 200 com o token
-curl -X POST http://localhost:8080/auth/login \
+curl -X POST http://localhost:8081/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"aluno@email.com","senha":"123456"}'
 # {"token":"eyJhbGciOiJIUzI1NiJ9...","tokenType":"Bearer","expiresIn":3600}
 
 # Rota protegida com o token → 200
-curl http://localhost:8080/api/me -H "Authorization: Bearer <token>"
+curl http://localhost:8081/api/me -H "Authorization: Bearer <token>"
 # {"email":"aluno@email.com","roles":["ROLE_USER"],"mensagem":"Você está autenticado como: aluno@email.com"}
 ```
 
